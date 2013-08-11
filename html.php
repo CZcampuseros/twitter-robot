@@ -36,19 +36,35 @@
 		<meta charset="utf-8">
 		<meta name="robots" content="noindex">
 		<title>twitter-robot</title>
+		<style>
+			body,h1,h2,ul { margin: 0px; }
+		</style>
 	</head>
 	<body>
 		<h1>twitter-robot</h1>
+		<h2>Last mentions:</h2>
+		<ul>
 		<?php
 			$url = 'https://api.twitter.com/1.1/statuses/mentions_timeline.json';
-			$getfield = '?';
+			$getfield = '?count=20';
 			$requestMethod = 'GET';
-			$twitter = new TwitterAPIExchange($settings);
-			echo $twitter->setGetfield($getfield)
-			             ->buildOauth($url, $requestMethod)
-			             ->performRequest();
-			echo "xexexe";
+			$twitter = new TwitterAPIExchange($config);
+			foreach (json_decode($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest()) as $out) {
+				echo '<li>'.$out->created_at.' "'.$out->text.'" '.$out->id.'</li>';
+			}
 		?>
+		</ul>
+		<h2>Last DMs:</h2>
+		<ul>
+		<?php
+			$url = 'https://api.twitter.com/1.1/direct_messages.json';
+			$getfield = '?count=20';
+			$requestMethod = 'GET';
+			foreach (json_decode($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest()) as $out) {
+				echo '<li>'.$out->created_at.' "'.$out->text.'" '.$out->id.'</li>';
+			}
+		?>
+		</ul>
 	</body>
 </html>
 <?php
