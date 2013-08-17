@@ -14,7 +14,7 @@
 		<h1>twitter-robot</h1>
 		<form method="post">
 			<label for="pass">Password: </label>
-			<input type="password" id="pass" name="pass" size="12" maxlength="12" ></input>
+			<input type="password" id="pass" name="pass" size="12" maxlength="12"></input>
 			<input type="submit" value="Login"></input></span>
 		</form>
 	</body>
@@ -24,7 +24,7 @@
 	if ( !empty($pass) ) {
 		if ( md5($pass) == $config['htpass'] ) { $_SESSION['login'] = 'logged'; }
 		header("HTTP/1.1 301 Moved Permanently");
-		header("Location: index.php");
+		header("Location: index.php?type=debug");
 		header("Connection: close");
 		exit();
 	}
@@ -60,6 +60,7 @@
 			$url = 'https://api.twitter.com/1.1/direct_messages.json';
 			$getfield = '?count=20';
 			$requestMethod = 'GET';
+			$twitter = new TwitterAPIExchange($config);
 			foreach (json_decode($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest()) as $out) {
 				echo '<li>'.$out->created_at.' "'.$out->text.'" '.$out->id.'</li>';
 			}
