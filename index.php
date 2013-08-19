@@ -2,7 +2,7 @@
     ob_start();
     chdir(dirname($_SERVER['SCRIPT_FILENAME']));
     session_start();
-    //error_reporting(E_ALL ^ E_NOTICE);
+    error_reporting(E_ALL ^ E_NOTICE);
 
     $type = trim(htmlspecialchars(htmlspecialchars_decode($_GET['type'], ENT_NOQUOTES), ENT_NOQUOTES));
 
