@@ -8,8 +8,12 @@
 	}
 	function sqlarray($mysqli, $query) {
 		if ( $result = $mysqli->query($query) ) {
-			while ( $obj = $result->fetch_object() ) {
-				$array[] = $obj;
+			if ( is_object( $result ) ) {
+				while ( $obj = $result->fetch_object() ) {
+					$array[] = $obj;
+				}
+			} else {
+				return false;
 			}
 		}
 		return $array;
@@ -64,7 +68,7 @@
 						$postfields = array('text' => "Success! Admin @".$target." added.", 'user_id' => $out->sender->id);
 						$requestMethod = 'POST';
 						$twitter = new TwitterAPIExchange($config);
-						mysqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_dm` (`user_id`, `user_name`) VALUES ('".$user->id."', '".$user->screen_name."');");
+						sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_dm` (`user_id`, `user_name`) VALUES ('".$user->id."', '".$user->screen_name."');");
 						$json = json_decode($twitter->buildOauth($url, $requestMethod)->setPostfields($postfields)->performRequest());
 					}
 				}
@@ -85,7 +89,7 @@
 					$postfields = array('text' => "Success! Admin @".$target." deleted.", 'user_id' => $out->sender->id);
 					$requestMethod = 'POST';
 					$twitter = new TwitterAPIExchange($config);
-					mysqlarray($mysqli, "DELETE FROM `twbot_dm` WHERE user_id = ".$user->id.";");
+					sqlarray($mysqli, "DELETE FROM `twbot_dm` WHERE user_id = ".$user->id.";");
 					$json = json_decode($twitter->buildOauth($url, $requestMethod)->setPostfields($postfields)->performRequest());
 				}
 			}
@@ -143,7 +147,7 @@
 				$target = $target[0];
 
 				$duplicate = 0;
-				foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_hash` WHERE hash = '.$hash.';') as $obj ) {
+				foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_hash` WHERE hash = '.$target.';') as $obj ) {
 					$duplicate = 1;
 				}
 				if ($duplicate !== 1) {
@@ -162,18 +166,12 @@
 				$target = explode(' ', $target[1]);
 				$target = $target[0];
 
-				$url = 'https://api.twitter.com/1.1/users/search.json';
-				$getfield = '?q='.$target;
-				$requestMethod = 'GET';
+				$url = 'https://api.twitter.com/1.1/direct_messages/new.json';
+				$postfields = array('text' => "Success! #".$target." deleted.", 'user_id' => $out->sender->id);
+				$requestMethod = 'POST';
 				$twitter = new TwitterAPIExchange($config);
-				foreach (json_decode($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest()) as $user) {
-					$url = 'https://api.twitter.com/1.1/direct_messages/new.json';
-					$postfields = array('text' => "Success! #".$target." deleted.", 'user_id' => $out->sender->id);
-					$requestMethod = 'POST';
-					$twitter = new TwitterAPIExchange($config);
-					sqlarray($mysqli, "DELETE FROM `twbot_hash` WHERE hash = '".$target."';");
-					$json = json_decode($twitter->buildOauth($url, $requestMethod)->setPostfields($postfields)->performRequest());
-				}
+				sqlarray($mysqli, "DELETE FROM `twbot_hash` WHERE hash = '".$target."';");
+				$json = json_decode($twitter->buildOauth($url, $requestMethod)->setPostfields($postfields)->performRequest());
 			}
 
 			sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->sender->id."', '".$out->sender->screen_name."', '".$out->text."', 'dm');");
