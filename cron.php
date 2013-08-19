@@ -1,45 +1,20 @@
 <?php
-	function tw_duplicate($mysqli, $out) {
-		if ( $result = $mysqli->query('SELECT * FROM `twbot_tw` WHERE id = '.$out->id.';') ) {
-			while ( $obj = $result->fetch_object() ) {
-				return true;
-			}
-		}
-	}
-	function sqlarray($mysqli, $query) {
-		if ( $result = $mysqli->query($query) ) {
-			if ( is_object( $result ) ) {
-				while ( $obj = $result->fetch_object() ) {
-					$array[] = $obj;
-				}
-			} else {
-				return false;
-			}
-		}
-		return $array;
-	}
-	function twitteraccess($config, $method, $url, $data) {
-		if ($method == 'POST') {
-			$twitter = new TwitterAPIExchange($config);
-			return json_decode($twitter->buildOauth($url, $method)->setPostfields($data)->performRequest());
-		}
-		if ($method == "GET") {
-			$twitter = new TwitterAPIExchange($config);
-			return json_decode($twitter->setGetfield($data)->buildOauth($url, $method)->performRequest());
+	// MENTIONs
+	foreach (twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/statuses/mentions_timeline.json', '?count=20') as $out) {
+		if ( tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
+			sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->user->id."', '".$out->sender->screen_name."', '".$out->text."', 'me');");
 		}
 	}
 
 	// HASHTAGs
 	foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_hash`;') as $obj ) {
-		foreach ( twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/search/tweets.json', '?q=#'.$obj->hash.'&result_type=recent&count=20') as $xout ) {
-			foreach ($xout as $out) {
-				foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_rt`;') as $usr ) {
-					if ( tw_duplicate($mysqli, $out) !== true && !empty($out->id) && $usr->user_id == $out->user->id ) {
-						twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/statuses/retweet/'.$out->id.'.json', array());
-						sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->user->id."', '".$out->user->screen_name."', '".$out->text."', '#".$obj->hash."');");
-					}
+		foreach ( twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/search/tweets.json', '?q=#'.$obj->hash.'&result_type=recent&count=20') as $out ) {
+			foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_rt`;') as $usr ) {
+				if ( tw_duplicate($mysqli, $out) !== true && !empty($out->id) && $usr->user_id == $out->user->id ) {
+					twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/statuses/retweet/'.$out->id.'.json', array());
 				}
 			}
+			sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->user->id."', '".$out->user->screen_name."', '".$out->text."', '#".$obj->hash."');");
 		}
 	}
 
@@ -133,13 +108,6 @@
 			}
 
 			sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->sender->id."', '".$out->sender->screen_name."', '".$out->text."', 'dm');");
-		}
-	}
-
-	// MENTIONs
-	foreach (twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/statuses/mentions_timeline.json', '?count=20') as $out) {
-		if ( tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
-			sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->user->id."', '".$out->sender->screen_name."', '".$out->text."', 'me');");
 		}
 	}
 ?>

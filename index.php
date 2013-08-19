@@ -8,6 +8,7 @@
 
     if ( $type == 'cron' || $type == 'debug' ) {
         include('config.php');
+        include('functions.php');
 
         if ( !empty($config['server']) && !empty($config['username']) && !empty($config['password']) && !empty($config['database']) ) {
             $mysqli = new mysqli($config['server'], $config['username'], $config['password'], $config['database']);
