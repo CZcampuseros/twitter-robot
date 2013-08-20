@@ -6,6 +6,11 @@
 				return true;
 			}
 		}
+		if ( $result = $mysqli->query('SELECT * FROM `twbot_ban` WHERE user_id = '.$out->sender->id.';') ) {
+			while ( $obj = $result->fetch_object() ) {
+				return true;
+			}
+		}
 	}
 
 	// ACCESS MySQL and return ARRAY or FALSE
