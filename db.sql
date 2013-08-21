@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Aug 19, 2013 at 06:36 AM
+-- Generation Time: Aug 20, 2013 at 10:54 AM
 -- Server version: 5.5.31
 -- PHP Version: 5.4.4-14+deb7u3
 
@@ -23,56 +23,15 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `twbot_dm`
+-- Table structure for table `twbot_short`
 --
 
-CREATE TABLE IF NOT EXISTS `twbot_dm` (
+CREATE TABLE IF NOT EXISTS `twbot_short` (
   `id` int(9) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(32) NOT NULL,
-  `user_name` varchar(48) COLLATE utf8_czech_ci NOT NULL,
+  `short` varchar(32) CHARACTER SET latin1 NOT NULL,
+  `long` varchar(128) CHARACTER SET latin1 NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci COMMENT='List of DM users' AUTO_INCREMENT=15 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `twbot_hash`
---
-
-CREATE TABLE IF NOT EXISTS `twbot_hash` (
-  `id` int(9) NOT NULL AUTO_INCREMENT,
-  `hash` varchar(255) COLLATE utf8_czech_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci COMMENT='List of RT hashtags' AUTO_INCREMENT=31 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `twbot_rt`
---
-
-CREATE TABLE IF NOT EXISTS `twbot_rt` (
-  `id` int(9) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(32) NOT NULL,
-  `user_name` varchar(48) COLLATE utf8_czech_ci NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci COMMENT='List of RT users' AUTO_INCREMENT=11 ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `twbot_tw`
---
-
-CREATE TABLE IF NOT EXISTS `twbot_tw` (
-  `id` bigint(32) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `user_id` int(32) NOT NULL,
-  `user_name` varchar(48) COLLATE utf8_czech_ci NOT NULL,
-  `text` varchar(255) COLLATE utf8_czech_ci NOT NULL,
-  `type` varchar(9) COLLATE utf8_czech_ci NOT NULL,
-  KEY `id` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci COMMENT='List of tweets';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_czech_ci COMMENT='list of mention shortcuts' AUTO_INCREMENT=6 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

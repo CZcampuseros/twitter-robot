@@ -4,10 +4,23 @@
 
 	// MENTIONs
 	foreach (twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/statuses/mentions_timeline.json', '?count=20') as $out) {
-		if ( tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
-			echo '';
+		$target = explode(' ', $out->text);
+		$short = $target[1];
+		unset($target[0], $target[1]);
+		$target = implode(' ', $target);
 
-			// OTHERS
+
+		// SHORTCUTS
+		foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_short`;') as $obj ) {
+			if ( $short == $obj->short && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
+				twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/statuses/update.json', array('status' => $obj->long.' '.$target, 'in_reply_to_status_id' => $out->id));
+				sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->user->id."', '".$out->sender->screen_name."', '".$out->text."', 'short');");
+			}
+		}
+
+
+		// OTHERS
+		if ( tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
 			sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->user->id."', '".$out->sender->screen_name."', '".$out->text."', 'me');");
 		}
 	}
@@ -141,7 +154,7 @@
 				$duplicate = 1;
 			}
 			if ($duplicate !== 1) {
-				twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/direct_messages/new.json', array('text' => "Hashtags #".$target." added.", 'user_id' => $out->sender->id));
+				twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/direct_messages/new.json', array('text' => "Hashtag #".$target." added.", 'user_id' => $out->sender->id));
 				sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_hash` (`id`, `hash`) VALUES (NULL, '".$target."');");
 			}
 			sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->sender->id."', '".$out->sender->screen_name."', '".$out->text."', 'add #');");
@@ -154,9 +167,43 @@
 			$target = explode(' ', $target[1]);
 			$target = $target[0];
 
-			twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/direct_messages/new.json', array('text' => "Hashtags #".$target." deleted.", 'user_id' => $out->sender->id));
+			twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/direct_messages/new.json', array('text' => "Hashtag #".$target." deleted.", 'user_id' => $out->sender->id));
 			sqlarray($mysqli, "DELETE FROM `twbot_hash` WHERE hash = '".$target."';");
 			sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->sender->id."', '".$out->sender->screen_name."', '".$out->text."', 'del #');");
+		}
+
+
+		// ADD SHORTCUT
+		if ( preg_match('/^add [a-z0-9]* .*/i', $out->text) && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
+			$target = explode(' ', $out->text);
+			$short = explode(' ', $target[1]);
+			$short = $short[0];
+			unset($target[0], $target[1]);
+			$target = implode(' ', $target);
+
+			$duplicate = 0;
+			foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_short` WHERE short = '.$short.';') as $obj ) {
+				$duplicate = 1;
+			}
+			if ($duplicate !== 1) {
+				twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/direct_messages/new.json', array('text' => "Shortcut ".$short." added.", 'user_id' => $out->sender->id));
+				sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_short` (`short`, `long`) VALUES ('".$short."', '".trim($target)."');");
+			}
+			sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->sender->id."', '".$out->sender->screen_name."', '".$out->text."', 'add short');");
+		}
+
+
+		// DEL SHORTCUT
+		if ( preg_match('/^del [a-z0-9]* .*/i', $out->text) && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
+			$target = explode(' ', $out->text);
+			$short = explode(' ', $target[1]);
+			$short = $short[0];
+			unset($target[0], $target[1]);
+			$target = implode(' ', $target);
+
+			twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/direct_messages/new.json', array('text' => "Shortcut ".$short." deleted.", 'user_id' => $out->sender->id));
+			sqlarray($mysqli, "DELETE FROM `twbot_short` WHERE short = '".$short."';");
+			sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->sender->id."', '".$out->sender->screen_name."', '".$out->text."', 'del short');");
 		}
 
 
