@@ -21,7 +21,7 @@
 					$array[] = $obj;
 				}
 			} else {
-				return false;
+				$array = array();
 			}
 		}
 		return $array;

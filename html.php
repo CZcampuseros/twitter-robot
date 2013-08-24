@@ -37,35 +37,55 @@
 		<meta name="robots" content="noindex">
 		<title>twitter-robot</title>
 		<style>
-			body,h1,h2,ul { margin: 0px; }
+			body,h1,h2,h3,ul,ol,hr { margin: 0px; }
 		</style>
 	</head>
 	<body>
 		<h1>twitter-robot</h1>
-		<h2>Last mentions:</h2>
+		<h2>Manual:</h2>
+		<ol>
+			<li>add admin @<i>user</i><br />del admin @<i>user</i></li>
+			<li>add ban @<i>user</i><br />del ban @<i>user</i></li>
+			<li>add @<i>user</i><br />del @<i>user</i></li>
+			<li>add #<i>user</i><br />del #<i>user</i></li>
+			<li>add <i>shortcode</i> <i>message</i><br />del <i>shortcode</i></li>
+		</ol><hr />
 		<ul>
-		<?php
-			$url = 'https://api.twitter.com/1.1/statuses/mentions_timeline.json';
-			$getfield = '?count=20';
-			$requestMethod = 'GET';
-			$twitter = new TwitterAPIExchange($config);
-			foreach (json_decode($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest()) as $out) {
-				echo '<li>'.$out->created_at.' "'.$out->text.'" '.$out->id.'</li>';
-			}
-		?>
+			<li>Bot listens <b><sub>1</sub></b>admins.</li>
+			<li>Bot ignores <b><sub>2</sub></b>bans.</li>
+			<li>Bot retweets <b><sub>4</sub></b>hashtags from <b><sub>3</sub></b>users.</li>
+			<li>Bot tweets <b><sub>5</sub></b>message when:<br /> recieve mentions with <b><sub>5</sub></b>shortcode in the beginnig of tweet.</li>
 		</ul>
-		<h2>Last DMs:</h2>
-		<ul>
-		<?php
-			$url = 'https://api.twitter.com/1.1/direct_messages.json';
-			$getfield = '?count=20';
-			$requestMethod = 'GET';
-			$twitter = new TwitterAPIExchange($config);
-			foreach (json_decode($twitter->setGetfield($getfield)->buildOauth($url, $requestMethod)->performRequest()) as $out) {
-				echo '<li>'.$out->created_at.' "'.$out->text.'" '.$out->id.'</li>';
-			}
-		?>
-		</ul>
+		<h2>Database</h2>
+		<h3>Admins</h3>
+		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_dm`;') as $obj) {
+			echo '<li>@'.$obj->user_name.' '.$obj->user_id.' <a href="https://twitter.com/'.$obj->user_name."\">link</a></li>\n";
+		} ?></ul>
+		<h3>RT users</h3>
+		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_rt`;') as $obj) {
+			echo '<li>@'.$obj->user_name.' '.$obj->user_id.' <a href="https://twitter.com/'.$obj->user_name."\">a</a></li>\n";
+		} ?></ul>
+		<h3>BAN users</h3>
+		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_ban`;') as $obj) {
+			echo '<li>@'.$obj->user_name.' '.$obj->user_id.' <a href="https://twitter.com/'.$obj->user_name."\">link</a></li>\n";
+		} ?></ul>
+		<h3>RT hashtags</h3>
+		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_hash`;') as $obj) {
+			echo '<li>#'.$obj->hash.' <a href="https://twitter.com/search?q=%23'.$obj->hash."&src=hash\">link</a></li>\n";
+		} ?></ul>
+		<h3>Shortcuts</h3>
+		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_short`;') as $obj) {
+			echo '<li>'.$obj->short.' => '.$obj->long."</li>\n";
+		} ?></ul>
+		<h2>Twitter</h2>
+		<h3>Last mentions</h3>
+		<ul><?php foreach (twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/statuses/mentions_timeline.json', '?count=20') as $out) {
+			echo '<li>'.$out->text.' '.$out->id.' '.$out->created_at."</li>\n";
+		} ?></ul>
+		<h3>Last DMs</h3>
+		<ul><?php foreach (twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/direct_messages.json', '?count=20') as $out) {
+			echo '<li>'.$out->text.' '.$out->id.' '.$out->created_at."</li>\n";
+		} ?></ul>
 	</body>
 </html>
 <?php

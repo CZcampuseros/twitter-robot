@@ -1,7 +1,4 @@
 <?php
-	$startmicrotime = MicroTime(1);
-
-
 	// MENTIONs
 	foreach (twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/statuses/mentions_timeline.json', '?count=20') as $out) {
 		$target = explode(' ', $out->text);
@@ -194,7 +191,7 @@
 
 
 		// DEL SHORTCUT
-		if ( preg_match('/^del [a-z0-9]* .*/i', $out->text) && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
+		if ( preg_match('/^del [a-z0-9]*/i', $out->text) && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
 			$target = explode(' ', $out->text);
 			$short = explode(' ', $target[1]);
 			$short = $short[0];
@@ -212,8 +209,4 @@
 			sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->sender->id."', '".$out->sender->screen_name."', '".$out->text."', 'dm');");
 		}
 	}
-
-
-	$stopmicrotime = MicroTime(1);
-	printf ("T: %01.2f sec", ($stopmicrotime-$startmicrotime));
 ?>
