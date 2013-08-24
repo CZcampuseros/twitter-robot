@@ -52,7 +52,7 @@
 				foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_dm` WHERE user_id = '.$user->id.';') as $obj ) {
 					$duplicate = 1;
 				}
-				if ($duplicate !== 1) {
+				if ($duplicate !== 1 && $user->screen_name == $target ) {
 					twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/direct_messages/new.json', array('text' => "Admin @".$target." added.", 'user_id' => $out->sender->id));
 					sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_dm` (`user_id`, `user_name`) VALUES ('".$user->id."', '".$user->screen_name."');");
 				}
@@ -86,7 +86,7 @@
 				foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_ban` WHERE user_id = '.$user->id.';') as $obj ) {
 					$duplicate = 1;
 				}
-				if ($duplicate !== 1) {
+				if ($duplicate !== 1 && $user->screen_name == $target) {
 					twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/direct_messages/new.json', array('text' => "Ban @".$target." added.", 'user_id' => $out->sender->id));
 					sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_ban` (`user_id`, `user_name`) VALUES ('".$user->id."', '".$user->screen_name."');");
 				}
@@ -120,7 +120,7 @@
 				foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_rt` WHERE user_id = '.$user->id.';') as $obj ) {
 					$duplicate = 1;
 				}
-				if ($duplicate !== 1) {
+				if ($duplicate !== 1 && $user->screen_name == $target) {
 					twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/direct_messages/new.json', array('text' => "Retweets @".$target." added.", 'user_id' => $out->sender->id));
 					sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_rt` (`user_id`, `user_name`) VALUES ('".$user->id."', '".$user->screen_name."');");
 				}
