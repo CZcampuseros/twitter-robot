@@ -22,11 +22,7 @@
 				}
 			}
 		}
-		if (!empty($array)) {
-			return $array;
-		} else {
-			return array('error' => '1');
-		}
+		return $array;
 	}
 
 	// ACCESS TWITTER
