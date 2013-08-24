@@ -20,11 +20,13 @@
 				while ( $obj = $result->fetch_object() ) {
 					$array[] = $obj;
 				}
-			} else {
-				$array = array();
 			}
 		}
-		return $array;
+		if (!empty($array)) {
+			return $array;
+		} else {
+			return array('error' => '1');
+		}
 	}
 
 	// ACCESS TWITTER

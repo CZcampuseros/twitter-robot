@@ -63,7 +63,7 @@
 		} ?></ul>
 		<h3>RT users</h3>
 		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_rt`;') as $obj) {
-			echo '<li>@'.$obj->user_name.' '.$obj->user_id.' <a href="https://twitter.com/'.$obj->user_name."\">a</a></li>\n";
+			echo '<li>@'.$obj->user_name.' '.$obj->user_id.' <a href="https://twitter.com/'.$obj->user_name."\">link</a></li>\n";
 		} ?></ul>
 		<h3>BAN users</h3>
 		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_ban`;') as $obj) {
@@ -77,15 +77,7 @@
 		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_short`;') as $obj) {
 			echo '<li>'.$obj->short.' => '.$obj->long."</li>\n";
 		} ?></ul>
-		<h2>Twitter</h2>
-		<h3>Last mentions</h3>
-		<ul><?php foreach (twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/statuses/mentions_timeline.json', '?count=20') as $out) {
-			echo '<li>'.$out->text.' '.$out->id.' '.$out->created_at."</li>\n";
-		} ?></ul>
-		<h3>Last DMs</h3>
-		<ul><?php foreach (twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/direct_messages.json', '?count=20') as $out) {
-			echo '<li>'.$out->text.' '.$out->id.' '.$out->created_at."</li>\n";
-		} ?></ul>
+		<a href="?type=api"><h2>Twitter</h2></a>
 	</body>
 </html>
 <?php

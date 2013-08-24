@@ -18,6 +18,8 @@
 
     if ( $type == 'cron' ) {
         include('cron.php');
+    } elseif ( $type == 'api' ) {
+        include('html_api.php');
     } else {
         include('html.php');
     }
