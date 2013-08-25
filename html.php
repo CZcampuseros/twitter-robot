@@ -55,7 +55,7 @@
 			<li>Bot listens <b><sub>1</sub></b>admins.</li>
 			<li>Bot ignores <b><sub>2</sub></b>bans.</li>
 			<li>Bot retweets <b><sub>4</sub></b>hashtags from <b><sub>3</sub></b>users.</li>
-			<li>Bot tweets <b><sub>6</sub></b>message when recieves mentions<br /> from <b><sub>5</sub></b>users with <b><sub>6</sub></b>shortcode in the beginnig of tweet.</li>
+			<li>Bot tweets <b><sub>6</sub></b>message when recieves mentions (max. 90 chars.)<br /> from <b><sub>5</sub></b>users with <b><sub>6</sub></b>shortcode in the beginnig of tweet.</li>
 		</ul>
 		<h2>Database</h2>
 		<h3>Admins</h3>

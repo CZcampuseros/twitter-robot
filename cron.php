@@ -5,6 +5,9 @@
 		$short = $target[1];
 		unset($target[0], $target[1]);
 		$target = implode(' ', $target);
+		if (strlen($target) > 90) {
+			$target = substr($target, 0, 90).'...';
+		}
 
 
 		// SHORTCUTS
