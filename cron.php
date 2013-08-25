@@ -11,7 +11,7 @@
 		foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_short`;') as $obj ) {
 			if ( $short == $obj->short && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
 				twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/statuses/update.json', array('status' => $obj->long.' '.$target, 'in_reply_to_status_id' => $out->id));
-				sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->user->id."', '".$out->sender->screen_name."', '".$out->text."', 'short');");
+				sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->user->id."', '".$out->user->screen_name."', '".$out->text."', 'short');");
 			}
 		}
 

@@ -35,7 +35,7 @@
 		if ($method == "GET") {
 			$twitter = new TwitterAPIExchange($config);
 			$return = json_decode($twitter->setGetfield($data)->buildOauth($url, $method)->performRequest());
-			if ( $url == 'https://api.twitter.com/1.1/search/tweets.json' ) {
+			if ( $url == 'https://api.twitter.com/1.1/search/tweets.json' || $url == 'https://api.twitter.com/1.1/users/show.json' ) {
 				foreach ($return as $tweets) {
 					return $tweets;
 				}

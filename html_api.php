@@ -24,7 +24,7 @@
 	if ( !empty($pass) ) {
 		if ( md5($pass) == $config['htpass'] ) { $_SESSION['login'] = 'logged'; }
 		header("HTTP/1.1 301 Moved Permanently");
-		header("Location: index.php?type=debug");
+		header("Location: index.php");
 		header("Connection: close");
 		exit();
 	}
