@@ -24,5 +24,5 @@
         include('html.php');
     }
     $stopmicrotime = MicroTime(1);
-    printf ("T: %01.2f sec", ($stopmicrotime-$startmicrotime));
+    //printf ("T: %01.2f sec", ($stopmicrotime-$startmicrotime));
 ?>

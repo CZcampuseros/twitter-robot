@@ -13,6 +13,16 @@
 		}
 	}
 
+	function entry_duplicate($mysqli, $query) {
+		$duplicate = 0;
+		if ( $result = $mysqli->query($query) ) {
+			while ( $obj = $result->fetch_object() ) {
+				$duplicate = 1;
+			}
+		}
+		return $duplicate;
+	}
+
 	// ACCESS MySQL and return ARRAY or FALSE
 	function sqlarray($mysqli, $query) {
 		if ( $result = $mysqli->query($query) ) {
@@ -30,7 +40,11 @@
 		if ($method == 'POST') {
 			$twitter = new TwitterAPIExchange($config);
 			$return = json_decode($twitter->buildOauth($url, $method)->setPostfields($data)->performRequest());
-			return $return;
+			if (is_array($return->errors)) {
+				return 'error';
+			} else {
+				return $return;
+			}
 		}
 		if ($method == "GET") {
 			$twitter = new TwitterAPIExchange($config);
