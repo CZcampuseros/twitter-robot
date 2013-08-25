@@ -214,7 +214,7 @@
 
 
 		// ADD SHORTCUT
-		if ( preg_match('/^add [a-z0-9]* .*/i', $out->text) && !preg_match('/^add admin @.*/i', $out->text) && !preg_match('/^add ban @.*/i', $out->text) && !preg_match('/^add rt @.*/i', $out->text) && !preg_match('/^add me @.*/i', $out->text) && !preg_match('/^add rt #.*/i', $out->text) && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
+		if ( preg_match('/^add [a-z0-9]* .*/i', $out->text) && !preg_match('/^add admin .*/i', $out->text) && !preg_match('/^add ban .*/i', $out->text) && !preg_match('/^add rt .*/i', $out->text) && !preg_match('/^add me .*/i', $out->text) && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
 			$target = explode(' ', $out->text);
 			$short = explode(' ', $target[1]);
 			$short = $short[0];
@@ -232,7 +232,7 @@
 
 
 		// DEL SHORTCUT
-		if ( preg_match('/^del [a-z0-9]*/i', $out->text) && !preg_match('/^del admin @.*/i', $out->text) && !preg_match('/^del ban @.*/i', $out->text) && !preg_match('/^del rt @.*/i', $out->text) && !preg_match('/^del me @.*/i', $out->text) && !preg_match('/^del rt #.*/i', $out->text) && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
+		if ( preg_match('/^del [a-z0-9]*/i', $out->text) && !preg_match('/^del admin .*/i', $out->text) && !preg_match('/^del ban .*/i', $out->text) && !preg_match('/^del rt .*/i', $out->text) && !preg_match('/^del me .*/i', $out->text) && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
 			$target = explode(' ', $out->text);
 			$short = explode(' ', $target[1]);
 			$short = $short[0];
