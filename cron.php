@@ -34,7 +34,7 @@
 	foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_hash`;') as $obj ) {
 		foreach ( twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/search/tweets.json', '?q=#'.$obj->hash.'&result_type=recent&count=20') as $out ) {
 			foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_rt`;') as $usr ) {
-				if ( StrToLower($usr->user_id) == StrToLower($out->user->id) && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
+				if ( $usr->user_id == $out->user->id && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
 					$tw = twitteraccess($config, 'POST', 'https://api.twitter.com/1.1/statuses/retweet/'.$out->id.'.json', array());
 					if ($tw !== 'error') {
 						sqlarray($mysqli, "INSERT INTO `".$config['database']."`.`twbot_tw` (`id`, `user_id`, `user_name`, `text`, `type`) VALUES ('".$out->id."', '".$out->user->id."', '".$out->user->screen_name."', '".$out->text."', '#".$obj->hash."');");

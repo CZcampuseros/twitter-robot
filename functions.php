@@ -40,7 +40,7 @@
 		if ($method == 'POST') {
 			$twitter = new TwitterAPIExchange($config);
 			$return = json_decode($twitter->buildOauth($url, $method)->setPostfields($data)->performRequest());
-			if (is_array($return->errors)) {
+			if (is_array($return->errors) || is_string($return->errors)) {
 				return 'error';
 			} else {
 				return $return;
