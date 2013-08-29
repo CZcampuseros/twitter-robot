@@ -6,6 +6,7 @@
     $startmicrotime = MicroTime(1);
 
     $type = trim(htmlspecialchars(htmlspecialchars_decode($_GET['type'], ENT_NOQUOTES), ENT_NOQUOTES));
+    $redirect = trim(htmlspecialchars(htmlspecialchars_decode($_GET['redirect'], ENT_NOQUOTES), ENT_NOQUOTES));
 
     include('config.php');
     include('functions.php');
@@ -18,6 +19,11 @@
 
     if ( $type == 'cron' ) {
         include('cron.php');
+        if ( $redirect == 'index' ) {
+            header("HTTP/1.1 301 Moved Permanently");
+            header("Location: index.php");
+            header("Connection: close");
+        }
     } elseif ( $type == 'api' ) {
         include('html_api.php');
     } else {

@@ -38,12 +38,22 @@
 		<title>twitter-robot</title>
 		<style>
 			body,h1,h2,h3,ul,ol,hr { margin: 0px; }
+			hr { width: 100px; }
 		</style>
+		<script>
+			function HideAndShow(divId) {
+				if(document.getElementById(divId).style.display == 'none') {
+					document.getElementById(divId).style.display='block';
+				} else {
+					document.getElementById(divId).style.display = 'none';
+				}
+			}
+		</script>
 	</head>
 	<body>
 		<h1>twitter-robot</h1>
-		<h2>Manual:</h2>
-		<ol>
+		<h2><a onclick="javascript:HideAndShow('how');" href="#">Manual</a></h2>
+		<div class="hide" style="display: none;" id="how"><ol>
 			<li>add admin @<i>user</i><br />del admin @<i>user</i></li>
 			<li>add ban @<i>user</i><br />del ban @<i>user</i></li>
 			<li>add rt @<i>user</i><br />del rt @<i>user</i></li>
@@ -56,33 +66,37 @@
 			<li>Bot ignores <b><sub>2</sub></b>bans.</li>
 			<li>Bot retweets <b><sub>4</sub></b>hashtags from <b><sub>3</sub></b>users.</li>
 			<li>Bot tweets <b><sub>6</sub></b>message when recieves mentions (max. 90 chars.)<br /> from <b><sub>5</sub></b>users with <b><sub>6</sub></b>shortcode in the beginnig of tweet.</li>
-		</ul>
-		<h2>Database</h2>
-		<h3>Admins</h3>
-		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_dm`;') as $obj) {
+		</ul></div><hr />
+		<h2><a onclick="javascript:HideAndShow('dm')" href="#">Admins</a></h2>
+		<ul class="hide" style="display: none;" id="dm"><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_dm`;') as $obj) {
 			echo '<li>@'.$obj->user_name.' '.$obj->user_id.' <a href="https://twitter.com/'.$obj->user_name."\">link</a></li>\n";
 		} ?></ul>
-		<h3>RT users</h3>
-		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_rt`;') as $obj) {
+		<h2><a onclick="javascript:HideAndShow('rtu')" href="#">RT @</a></h2>
+		<ul class="hide" style="display: none;" id="rtu"><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_rt`;') as $obj) {
 			echo '<li>@'.$obj->user_name.' '.$obj->user_id.' <a href="https://twitter.com/'.$obj->user_name."\">link</a></li>\n";
 		} ?></ul>
-		<h3>RT hashtags</h3>
-		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_hash`;') as $obj) {
+		<h2><a onclick="javascript:HideAndShow('rth')" href="#">RT #</a></h2>
+		<ul class="hide" style="display: none;" id="rth"><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_hash`;') as $obj) {
 			echo '<li>#'.$obj->hash.' <a href="https://twitter.com/search?q=%23'.$obj->hash."&src=hash\">link</a></li>\n";
 		} ?></ul>
-		<h3>ME users</h3>
-		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_me`;') as $obj) {
+		<h2><a onclick="javascript:HideAndShow('meu')" href="#">ME @</a></h2>
+		<ul class="hide" style="display: none;" id="meu"><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_me`;') as $obj) {
 			echo '<li>@'.$obj->user_name.' '.$obj->user_id.' <a href="https://twitter.com/'.$obj->user_name."\">link</a></li>\n";
 		} ?></ul>
-		<h3>Shortcuts</h3>
-		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_short`;') as $obj) {
+		<h2><a onclick="javascript:HideAndShow('short')" href="#">Shortcuts</a></h2>
+		<ul class="hide" style="display: none;" id="short"><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_short`;') as $obj) {
 			echo '<li>'.$obj->short.' => '.$obj->long."</li>\n";
 		} ?></ul>
-		<h3>BAN users</h3>
-		<ul><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_ban`;') as $obj) {
+		<h2><a onclick="javascript:HideAndShow('ban')" href="#" href="#">BAN users</a></h2>
+		<ul class="hide" style="display: none;" id="ban"><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_ban`;') as $obj) {
 			echo '<li>@'.$obj->user_name.' '.$obj->user_id.' <a href="https://twitter.com/'.$obj->user_name."\">link</a></li>\n";
 		} ?></ul>
-		<a href="?type=api"><h2>Twitter</h2></a>
+		<h2><a onclick="javascript:HideAndShow('log')" href="#" href="#">LOG</a></h2>
+		<ul class="hide" style="display: none;" id="log"><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_tw` ORDER BY timestamp DESC;') as $obj) {
+			echo '<li>'.$obj->text.'<br />'.$obj->timestamp.' <b>'.$obj->type.'</b> @'.$obj->user_name."</li>\n";
+		} ?></ul><hr />
+		<h2><a href="?type=cron&redirect=index">Cron</a></h2>
+		<h2><a href="?type=api">Twitter</a></h2>
 	</body>
 </html>
 <?php
