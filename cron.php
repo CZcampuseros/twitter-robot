@@ -1,6 +1,7 @@
 <?php
 	// MENTIONs
 	foreach (twitteraccess($mysqli, $config, 'GET', 'https://api.twitter.com/1.1/statuses/mentions_timeline.json', '?count=20') as $out) {
+		$out->text = $mysqli->real_escape_string($out->text);
 		$target = explode(' ', $out->text);
 		$short = $target[1];
 		unset($target[0], $target[1]);
@@ -33,6 +34,7 @@
 	// HASHTAGs
 	foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_hash`;') as $obj ) {
 		foreach ( twitteraccess($mysqli, $config, 'GET', 'https://api.twitter.com/1.1/search/tweets.json', '?q=#'.$obj->hash.'&result_type=recent&count=20') as $out ) {
+			$out->text = $mysqli->real_escape_string($out->text);
 			foreach ( sqlarray($mysqli, 'SELECT * FROM `twbot_rt`;') as $usr ) {
 				if ( $usr->user_id == $out->user->id && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
 					$tw = twitteraccess($mysqli, $config, 'POST', 'https://api.twitter.com/1.1/statuses/retweet/'.$out->id.'.json', array());
@@ -47,6 +49,7 @@
 
 	// DMs
 	foreach (twitteraccess($mysqli, $config, 'GET', 'https://api.twitter.com/1.1/direct_messages.json', '?count=20') as $out) {
+		$out->text = $mysqli->real_escape_string($out->text);
 		// ADD ADMIN USER
 		if ( preg_match('/^add admin @.*/i', $out->text) && tw_duplicate($mysqli, $out) !== true && !empty($out->id) ) {
 			$target = explode('@', $out->text);
