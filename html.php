@@ -91,6 +91,10 @@
 		<ul class="hide" style="display: none;" id="ban"><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_ban`;') as $obj) {
 			echo '<li>@'.$obj->user_name.' '.$obj->user_id.' <a href="https://twitter.com/'.$obj->user_name."\">link</a></li>\n";
 		} ?></ul>
+		<h2><a onclick="javascript:HideAndShow('err')" href="#" href="#">Errors</a></h2>
+		<ul class="hide" style="display: none;" id="ban"><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_err`;') as $obj) {
+			echo '<li>'.$obj->timestamp.' '.$obj->code.' '.$obj->user_name."\n";
+		} ?></ul>
 		<h2><a onclick="javascript:HideAndShow('log')" href="#" href="#">LOG</a></h2>
 		<ul class="hide" style="display: none;" id="log"><?php foreach (sqlarray($mysqli, 'SELECT * FROM `twbot_tw` ORDER BY timestamp DESC;') as $obj) {
 			echo '<li>'.$obj->text.'<br />'.$obj->timestamp.' <b>'.$obj->type.'</b> @'.$obj->user_name."</li>\n";

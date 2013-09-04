@@ -43,11 +43,11 @@
 	<body>
 		<h1>twitter-api</h1>
 		<h2>Mentions</h2>
-		<ul><?php foreach (twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/statuses/mentions_timeline.json', '?count=20') as $out) {
+		<ul><?php foreach (twitteraccess($mysqli, $config, 'GET', 'https://api.twitter.com/1.1/statuses/mentions_timeline.json', '?count=20') as $out) {
 			echo '<li>'.$out->text.' '.$out->id.' '.$out->created_at."</li>\n";
 		} ?></ul>
 		<h2>DMs</h2>
-		<ul><?php foreach (twitteraccess($config, 'GET', 'https://api.twitter.com/1.1/direct_messages.json', '?count=20') as $out) {
+		<ul><?php foreach (twitteraccess($mysqli, $config, 'GET', 'https://api.twitter.com/1.1/direct_messages.json', '?count=20') as $out) {
 			echo '<li>'.$out->text.' '.$out->id.' '.$out->created_at."</li>\n";
 		} ?></ul>
 		<h2><a href="?type=cron&redirect=index">Cron</a></h2>
