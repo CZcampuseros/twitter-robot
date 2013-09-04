@@ -43,11 +43,11 @@
 			if (is_array($return->errors) || is_string($return->errors)) {
 				return 'error';
 				if (is_array($return->errors)) {
-					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`message`, `code`) VALUES ('".$return->errors->message."', '".$return->errors->code."',);");
+					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`type`, `message`, `code`) VALUES ('POST', '".$return->errors->message."', '".$return->errors->code."',);");
 				} elseif (is_string($return->errors)) {
-					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`message`, `code`) VALUES ('".$return->errors->message."', '".$return->errors->code."',);");
+					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`type`, `message`, `code`) VALUES ('POST', '".$return->errors->message."', '".$return->errors->code."',);");
 				} else {
-					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`message`, `code`) VALUES ('".$return->errors."', '',);");
+					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`type`, `message`, `code`) VALUES ('POST', '".$return->errors."', '',);");
 				}
 			} else {
 				return $return;
@@ -59,23 +59,9 @@
 			if ( $url == 'https://api.twitter.com/1.1/search/tweets.json' || $url == 'https://api.twitter.com/1.1/users/show.json' ) {
 				foreach ($return as $tweets) {
 					return $tweets;
-					if (is_array($return->errors)) {
-						$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`message`, `code`) VALUES ('".$return->errors->message."', '".$return->errors->code."',);");
-					} elseif (is_string($return->errors)) {
-						$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`message`, `code`) VALUES ('".$return->errors->message."', '".$return->errors->code."',);");
-					} else {
-						$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`message`, `code`) VALUES ('".$return->errors."', '',);");
-					}
 				}
 			} else {
 				return $return;
-				if (is_array($return->errors)) {
-					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`message`, `code`) VALUES ('".$return->errors->message."', '".$return->errors->code."',);");
-				} elseif (is_string($return->errors)) {
-					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`message`, `code`) VALUES ('".$return->errors->message."', '".$return->errors->code."',);");
-				} else {
-					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`message`, `code`) VALUES ('".$return->errors."', '',);");
-				}
 			}
 		}
 	}
