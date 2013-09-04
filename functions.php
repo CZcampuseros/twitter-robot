@@ -36,18 +36,18 @@
 	}
 
 	// ACCESS TWITTER
-	function twitteraccess($mysli, $config, $method, $url, $data) {
+	function twitteraccess($mysqli, $config, $method, $url, $data) {
 		if ($method == 'POST') {
 			$twitter = new TwitterAPIExchange($config);
 			$return = json_decode($twitter->buildOauth($url, $method)->setPostfields($data)->performRequest());
-			if (is_array($return->errors) || is_string($return->errors)) {
+			if (!is_string($return->text) || is_array($return->errors) || is_string($return->errors)) {
 				return 'error';
 				if (is_array($return->errors)) {
 					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`type`, `message`, `code`) VALUES ('POST', '".$return->errors->message."', '".$return->errors->code."',);");
 				} elseif (is_string($return->errors)) {
-					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`type`, `message`, `code`) VALUES ('POST', '".$return->errors->message."', '".$return->errors->code."',);");
+					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`type`, `message`) VALUES ('POST', '".$return->errors."');");
 				} else {
-					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`type`, `message`, `code`) VALUES ('POST', '".$return->errors."', '',);");
+					$mysqli->query("INSERT INTO `".$config['database']."`.`twbot_err` (`type`) VALUES ('POST');");
 				}
 			} else {
 				return $return;
